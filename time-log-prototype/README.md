@@ -16,7 +16,7 @@ Setup
 ```powershell
 cd "time-log-prototype"
 copy .env.example .env
-# edit .env as needed
+# edit .env as needed (set DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, JWT_SECRET)
 ```
 
 2. Install dependencies
@@ -25,7 +25,24 @@ copy .env.example .env
 npm install
 ```
 
-3. Create the MySQL database (if not exists) and run the seed
+3. Ensure MySQL is running, create the database (if not exists), and seed
+
+Windows tips to start MySQL:
+- Start Menu -> Services -> find "MySQL" (often "MySQL80") -> Start
+- Or in PowerShell (as Administrator):
+
+```powershell
+# Try common service names; ignore errors if a name doesn't exist
+Get-Service MySQL*, MariaDB* | Select-Object Name,Status,StartType
+# Start if stopped (replace with your actual service name)
+Start-Service -Name MySQL80
+```
+
+Verify the port is open (default 3306):
+
+```powershell
+Test-NetConnection -ComputerName 127.0.0.1 -Port 3306
+```
 
 Using a MySQL client, create the DB name from `.env` (default: `time_log_prototype`):
 
@@ -61,5 +78,6 @@ API Summary
 - GET /api/employees (auth, hr only) -> list users
 
 Notes
-- The backend uses MySQL (change `.env`) and stores timestamps in MySQL DATETIME columns. JWT secret is read from `JWT_SECRET`.
+- The backend uses MySQL (configure `.env`) and stores timestamps in MySQL DATETIME columns. JWT secret is read from `JWT_SECRET`.
+- DB_PORT is supported (default 3306).
 - This is a minimal prototype — consider adding validation, pagination, rate-limiting, and HTTPS for production.
